@@ -1,0 +1,11 @@
+steps:
+- name: echo message
+  action: echo
+  conf:
+    message: hi, this is hello world 
+  output: hi
+- name: echo with template
+  action: echo
+  conf:
+    message: "{{ .hi }}, yeah, I'm templated"
+  output: tempResult
