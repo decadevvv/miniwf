@@ -1,4 +1,9 @@
 steps:
+- name: cat go.mod
+  action: shell
+  conf:
+    command: "cat go.mod"
+  output: mod
 - name: echo message
   action: echo
   conf:
@@ -7,5 +12,5 @@ steps:
 - name: echo with template
   action: echo
   conf:
-    message: "{{ .hi }}, yeah, I'm templated"
+    message: "{{ .hi }}, yeah, I'm templated, {{.mod.stdout}}"
   output: tempResult

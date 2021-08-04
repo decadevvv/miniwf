@@ -46,7 +46,7 @@ func initDoc(parent *cobra.Command) {
 			if !ok {
 				return fmt.Errorf("cannot find action %s", defaultConf.Name)
 			}
-			fmt.Printf("Documentation for action %s: \n%s\n", defaultConf.Name, action.Doc())
+			fmt.Printf("Documentation for action %s: \n%s\n", defaultConf.Name, action.Doc)
 			return nil
 		},
 	}

@@ -26,18 +26,21 @@ func (e *Engine) SetDebug(debug bool) {
 }
 
 func (e *Engine) RunWorkflow(w core.Workflow) error {
+	if e.Debug {
+		log.Infof("Registered actions: %#v", e.Registry.ListRegisteredActions())
+	}
 	for index, step := range w.Steps {
 		log.Infof("STEP %d: %s", index, step.Name)
 		action, ok := e.Registry.GetAction(step.Action)
 		if !ok {
 			return fmt.Errorf("cannot find action %s", step.Action)
 		}
-		conf := action.DefaultConf()
+		conf := action.DefaultConf
 		err := utils.UnmarshalMapIntoStructWithTemplate(step.Conf, &conf, e.ContextMap, e.Debug)
 		if err != nil {
 			return fmt.Errorf("failed to unmarshal map into struct: %w", err)
 		}
-		err = action.Run(conf)
+		output, err := action.Run(conf)
 		if err != nil {
 			return fmt.Errorf("failecd to run action: %w", err)
 		}
@@ -45,7 +48,7 @@ func (e *Engine) RunWorkflow(w core.Workflow) error {
 		if ok {
 			return fmt.Errorf("output name %s is already occupied in context map", step.Output)
 		}
-		e.ContextMap[step.Output] = action.Output()
+		e.ContextMap[step.Output] = output
 	}
 	if e.Debug {
 		fmt.Println("FINAL CONTEXT MAP:")

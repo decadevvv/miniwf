@@ -1,45 +1,20 @@
-package echo
+package jsonpath
 
-import "fmt"
+import (
+	"github.com/decadevvv/miniwf/pkg/core"
+)
 
 type JSONPathActionConf struct {
 	Source   string `yaml:"source" validate:"required"`
 	JSONPath string `yaml:"jsonpath" validate:"required"`
 }
 
-type JSONPathAction struct {
-	o string
-}
-
-func NewJSONPathAction() *JSONPathAction {
-	return &JSONPathAction{}
-}
-
-func (a *JSONPathAction) Name() string {
-	return "jsonpath"
-}
-
-func (a *JSONPathAction) Doc() string {
-	return "use jsonpath to transform or extract struct and JSONs"
-}
-
-func (a *JSONPathAction) DefaultConf() interface{} {
-	return JSONPathActionConf{
+var JSONPathAction = core.Action{
+	Name: "jsonpath",
+	Doc:  "use jsonpath to transform or extract struct and JSONs",
+	DefaultConf: JSONPathActionConf{
 		Source:   "",
 		JSONPath: "",
-	}
-}
-
-func (a *JSONPathAction) Run(conf interface{}) error {
-	c, ok := conf.(JSONPathActionConf)
-	if !ok {
-		return fmt.Errorf("conf type is not correct")
-	}
-	fmt.Println(c.Message)
-	a.o = c.Message
-	return nil
-}
-
-func (a *JSONPathAction) Output() interface{} {
-	return a.o
+	},
+	Run: func(interface{}) (interface{}, error) { panic("not implemented") },
 }

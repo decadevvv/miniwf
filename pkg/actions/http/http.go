@@ -1,8 +1,10 @@
-package echo
+package http
 
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/decadevvv/miniwf/pkg/core"
 )
 
 type HTTPActionConf struct {
@@ -10,44 +12,27 @@ type HTTPActionConf struct {
 	URL     string `yaml:"url" validate:"required,url"`
 }
 
-type HTTPAction struct {
-	o http.Response
-}
-
-func NewHTTPAction() *HTTPAction {
-	return &HTTPAction{}
-}
-
-func (a *HTTPAction) Name() string {
-	return "http"
-}
-
-func (a *HTTPAction) DefaultConf() interface{} {
-	return HTTPActionConf{
+var HTTPAction = core.Action{
+	Name: "http",
+	Doc:  "do http requests",
+	DefaultConf: HTTPActionConf{
 		Operate: "get",
 		URL:     "",
-	}
-}
-
-func (a *HTTPAction) Run(conf interface{}) error {
-	c, ok := conf.(HTTPActionConf)
-	if !ok {
-		return fmt.Errorf("conf type is not correct")
-	}
-	if c.Operate == "get" {
-		resp, err := http.Get(c.URL)
-		if err != nil {
-			return err
+	},
+	Run: func(conf interface{}) (interface{}, error) {
+		c, ok := conf.(HTTPActionConf)
+		if !ok {
+			return nil, fmt.Errorf("conf type is not correct")
 		}
-		a.o = *resp
-	}
-	return nil
-}
-
-func (a *HTTPAction) Output() interface{} {
-	return a.o
-}
-
-func (a *HTTPAction) Doc() string {
-	return ""
+		switch c.Operate {
+		case "get":
+			resp, err := http.Get(c.URL)
+			if err != nil {
+				return nil, err
+			}
+			return *resp, nil
+		default:
+			return nil, fmt.Errorf("undefined operate %s", c.Operate)
+		}
+	},
 }

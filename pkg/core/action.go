@@ -1,9 +1,10 @@
 package core
 
-type Action interface {
-	Name() string
-	DefaultConf() interface{}
-	Run(conf interface{}) error
-	Output() interface{}
-	Doc() string
+type ActionRunFunc func(conf interface{}) (interface{}, error)
+
+type Action struct {
+	Name        string
+	Doc         string
+	DefaultConf interface{}
+	Run         ActionRunFunc
 }
