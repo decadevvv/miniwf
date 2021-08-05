@@ -2,6 +2,7 @@ package core
 
 type Workflow struct {
 	Name  string `yaml:"name" validate:"required"`
+	Version string `yaml:"version" validate:"omitempty"`
 	Doc   string `yaml:"doc" validate:"required"`
 	Steps []Step `yaml:"steps" validate:"required,dive"`
 }
